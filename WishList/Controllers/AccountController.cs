@@ -70,12 +70,12 @@ namespace WishList.Controllers
             {
                 return View("Login");
             }
-            var signInResult = _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: true, lockoutOnFailure: true);
+            var result = _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false).Result;
 
-            if (!signInResult.IsCompletedSuccessfully == false)
+            if (!result.Succeeded)
             {
-                ModelState.AddModelError(string.Empty, errorMessage: "Invalid Login Attempt");
-
+                ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
+                return View(model);
             }
             return RedirectToAction("Index", "Item");
         }
@@ -85,7 +85,7 @@ namespace WishList.Controllers
         public IActionResult Logout()
         {
             _signInManager.SignOutAsync();
-            return View("Home", "Index");
+            return RedirectToAction("Home", "Index");
         }
     }
 }
