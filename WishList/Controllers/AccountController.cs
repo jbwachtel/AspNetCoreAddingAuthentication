@@ -33,7 +33,7 @@ namespace WishList.Controllers
         {
             return View("Register");
         }
-        
+
         [HttpPost]
         [AllowAnonymous]
         public IActionResult Register(RegisterViewModel model)
@@ -49,9 +49,43 @@ namespace WishList.Controllers
                     ModelState.AddModelError("Password", error.Description);
                 }
                 return View(model);
-            }   
-                
+            }
+
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Login()
+        {
+            return View("Login");
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public IActionResult Login(LoginViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Login");
+            }
+            var signInResult = _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: true, lockoutOnFailure: true);
+
+            if (!signInResult.IsCompletedSuccessfully == false)
+            {
+                ModelState.AddModelError(string.Empty, errorMessage: "Invalid Login Attempt");
+
+            }
+            return RedirectToAction("Index", "Item");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Logout()
+        {
+            _signInManager.SignOutAsync();
+            return View("Home", "Index");
         }
     }
 }
