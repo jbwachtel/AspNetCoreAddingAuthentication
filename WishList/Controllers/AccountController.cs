@@ -68,13 +68,13 @@ namespace WishList.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View("Login");
+                return View(model);
             }
             var result = _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false).Result;
 
             if (!result.Succeeded)
             {
-                ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
+                ModelState.AddModelError(string.Empty, "Invalid Login Attempt.");
                 return View(model);
             }
             return RedirectToAction("Index", "Item");
@@ -85,7 +85,7 @@ namespace WishList.Controllers
         public IActionResult Logout()
         {
             _signInManager.SignOutAsync();
-            return RedirectToAction("Home", "Index");
+            return RedirectToAction("Index", "Home");
         }
     }
 }
