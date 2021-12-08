@@ -1,21 +1,29 @@
 ﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using WishList.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using WishList.Models;
 
 namespace WishList.Controllers
 {
+    [Authorize]
     public class ItemController : Controller
-    {
+    {        
         private readonly ApplicationDbContext _context;
 
-        public ItemController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public ItemController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
+            _userManager = userManager;
             _context = context;
         }
 
         public IActionResult Index()
         {
             var model = _context.Items.ToList();
+            
 
             return View("Index", model);
         }
